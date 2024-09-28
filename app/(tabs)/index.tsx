@@ -1,70 +1,121 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Image, StyleSheet, Text, View, ScrollView } from 'react-native';
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+    return (
+        <ScrollView style={styles.container}>
+            <View style={styles.section}>
+                <Text style={styles.headerText}>Пример 1</Text>
+                <Text style={styles.bodyText}>
+                    Какой-то текст
+                </Text>
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.headerText}>Пример 2</Text>
+                <Image
+                    source={require('@/assets/images/img.png')}
+                    style={styles.image}
+                />
+                <Text style={styles.bodyText}>
+                    Картинка сверху
+                </Text>
+            </View>
+
+            <Text style={styles.headerText}>Горизонтальный скроллинг</Text>
+            <ScrollView horizontal style={styles.scrollSection} showsHorizontalScrollIndicator={false}>
+                <View style={styles.scrollItem}><Text>Item 1</Text></View>
+                <View style={styles.scrollItem}><Text>Item 2</Text></View>
+                <View style={styles.scrollItem}><Text>Item 3</Text></View>
+                <View style={styles.scrollItem}><Text>Item 4</Text></View>
+            </ScrollView>
+
+            <Text style={styles.headerText}>Вертикальный скроллинг</Text>
+            <ScrollView style={styles.scrollBackground} showsVerticalScrollIndicator={true}>
+                <View style={styles.scrollContent}><Text>Item 1</Text></View>
+                <View style={styles.scrollContent}><Text>Item 2</Text></View>
+                <View style={styles.scrollContent}><Text>Item 3</Text></View>
+                <View style={styles.scrollContent}><Text>Item 4</Text></View>
+                <View style={styles.scrollContent}><Text>Item 5</Text></View>
+            </ScrollView>
+
+            <Text style={styles.headerText}>Пример 3</Text>
+            <ScrollView style={styles.limitedScroll} contentContainerStyle={styles.scrollInner}>
+                <Text>Item 1</Text>
+                <Text>Item 2</Text>
+                <Text>Item 3</Text>
+                <Text>Item 4</Text>
+                <Text>Item 5</Text>
+            </ScrollView>
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+    container: {
+        flex: 1,
+        padding: 25,
+        backgroundColor: '#f0f0f0',
+    },
+    section: {
+        marginBottom: 20,
+        backgroundColor: '#fff',
+        padding: 15,
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 3,
+    },
+    headerText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    bodyText: {
+        fontSize: 14,
+        color: '#333',
+    },
+    image: {
+        width: 200,
+        height: 100,
+        marginBottom: 10,
+    },
+    scrollSection: {
+        marginVertical: 10,
+    },
+    scrollItem: {
+        width: 100,
+        height: 100,
+        backgroundColor: '#ccc',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: 5,
+        borderRadius: 10,
+        elevation: 2,
+    },
+    scrollBackground: {
+        backgroundColor: '#e0f7fa',
+        marginVertical: 10,
+        paddingVertical: 10,
+        borderRadius: 8,
+    },
+    scrollContent: {
+        padding: 15,
+        marginBottom: 5,
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        elevation: 2,
+    },
+    limitedScroll: {
+        height: 150,
+        backgroundColor: '#f7e0e0',
+        marginVertical: 10,
+        borderRadius: 8,
+        padding: 10,
+    },
+    scrollInner: {
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    },
 });
