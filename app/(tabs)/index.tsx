@@ -1,94 +1,82 @@
 import React, { useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import { View, Text, TextInput, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import {Is} from "@sinclair/typebox/value/is";
-import Date = Is.Date;
+import todoStore from '../../src/stores/TodoStore';
 
-export default function App() {
-    const [todoList, setTodoList] = useState([]);
-    const [text, setText] = useState('');
+const TodoList = observer(() => {
+    const [newTodo, setNewTodo] = useState('');
 
-    const addTodo = () => {
-        if (text.trim()) {
-            setTodoList([...todoList, { id: Date.now(), text, completed: false }]);
-            setText('');
-        }
+    const handleAddTodo = () => {
+        todoStore.addTodo(newTodo);
+        setNewTodo('');
     };
-
-    const toggleComplete = (id) => {
-        setTodoList(todoList.map(todo =>
-            todo.id === id ? { ...todo, completed: !todo.completed } : todo
-        ));
-    };
-
-    const deleteTodo = (id) => {
-        setTodoList(todoList.filter(todo => todo.id !== id));
-    };
-
-    const renderTodoItem = ({ item }) => (
-        <View style={styles.todoItem}>
-            <TouchableOpacity onPress={() => toggleComplete(item.id)}>
-                <Text style={[styles.todoText, item.completed && styles.completedText]}>
-                    {item.text}
-                </Text>
-            </TouchableOpacity>
-            <Button title="Удалить" onPress={() => deleteTodo(item.id)} color="red" />
-        </View>
-    );
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>TODO List</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Добавить задачу"
-                value={text}
-                onChangeText={setText}
-            />
-            <Button title="Добавить" onPress={addTodo} />
-
+            <Text style={styles.header}>Todo List</Text>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Add a new todo..."
+                    value={newTodo}
+                    onChangeText={setNewTodo}
+                />
+                <Button title="Add" onPress={handleAddTodo} />
+            </View>
             <FlatList
-                data={todoList}
-                keyExtractor={item => item.id.toString()}
-                renderItem={renderTodoItem}
+                data={todoStore.todos}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <View style={styles.todoItem}>
+                        <TouchableOpacity onPress={() => todoStore.toggleTodoCompletion(item.id)}>
+                            <Text style={item.completed ? styles.completed : styles.todoText}>{item.text}</Text>
+                        </TouchableOpacity>
+                        <Button title="Delete" onPress={() => todoStore.removeTodo(item.id)} />
+                    </View>
+                )}
             />
         </View>
     );
-}
+});
+
+export default TodoList;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#f0f0f0',
+        marginTop: 50,
     },
-    title: {
+    header: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 20,
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        marginBottom: 20,
     },
     input: {
+        flex: 1,
         borderWidth: 1,
         borderColor: '#ccc',
         padding: 10,
-        marginBottom: 10,
         borderRadius: 5,
-        backgroundColor: '#fff',
+        marginRight: 10,
     },
     todoItem: {
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
+        alignItems: 'center',
         padding: 10,
-        backgroundColor: '#fff',
         borderBottomWidth: 1,
-        borderColor: '#eee',
-        marginBottom: 5,
-        borderRadius: 5,
+        borderBottomColor: '#ddd',
     },
     todoText: {
         fontSize: 16,
     },
-    completedText: {
+    completed: {
+        fontSize: 16,
         textDecorationLine: 'line-through',
         color: 'gray',
     },
