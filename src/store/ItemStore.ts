@@ -3,6 +3,7 @@ import ItemService from '../services/ItemService';
 
 class ItemStore {
     items: any[] = [];
+    completedItems: any[] = []; // Список завершённых задач
     isLoading: boolean = false;
     private itemService: ItemService;
 
@@ -33,6 +34,15 @@ class ItemStore {
     deleteItem = async (id: string) => {
         this.items = this.items.filter(item => item.id !== id);
         await this.itemService.saveItemsLocally(this.items);
+    };
+
+    // Новый метод для завершения задачи
+    completeTask = async (id: string) => {
+        const completedTask = this.items.find(item => item.id === id);
+        if (completedTask) {
+            this.completedItems.push(completedTask); // Добавляем задачу в завершённые
+            this.deleteItem(id); // Удаляем задачу из списка активных
+        }
     };
 }
 
